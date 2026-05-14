@@ -111,17 +111,6 @@ class BluetoothMonitor {
                 log("→ Devices left, starting \(Int(gracePeriod))s grace timer")
                 onStatusChanged?(L("status.device_left", Int(gracePeriod)))
             } else if let dt = disconnectTime, Date().timeIntervalSince(dt) >= gracePeriod {
-                let freshData = runSystemProfiler()
-                let stillAway = !watchedAddresses.contains {
-                    isConnected(in: freshData, address: $0) ||
-                    (parseRSSI(from: freshData, address: $0).map { $0 >= rssiThreshold } ?? false)
-                }
-                guard stillAway else {
-                    log("→ Device returned before lock, cancelling")
-                    disconnectTime = nil
-                    wasNearby = true
-                    return
-                }
                 log("→ Grace period expired → LOCKING")
                 onStatusChanged?(L("status.locking"))
                 onLockTriggered?()
