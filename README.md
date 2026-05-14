@@ -30,7 +30,9 @@ Right-click `Tether.app` → **Open** → **Open** to allow it.
 
 ## How It Works
 
-Tether polls your Mac's Bluetooth stack every 8 seconds and reads the RSSI (signal strength) of each watched device. When the signal drops below the configured threshold — and stays below it for the full grace period — the screen is locked via `pmset displaysleepnow`.
+Tether polls your Mac's Bluetooth stack every 8 seconds and reads the RSSI (signal strength) of each watched device. A device must be detected at least once before it counts as a criterion — devices you didn't bring that day are ignored. A device is only considered gone after **two consecutive missed polls**, then the grace period countdown begins. When it expires, the screen is locked via `pmset displaysleepnow`.
+
+After a lock, the active device set resets. Only devices that return after you unlock the screen are re-admitted as criteria — devices that stay away are automatically excluded until they reappear.
 
 No third-party tools required. Everything runs on built-in macOS utilities.
 
@@ -52,7 +54,7 @@ All settings are accessible from the menu bar icon.
 
 ## Known Limitations
 
-- **8-second polling interval** — there is up to an 8-second lag between a device leaving and the grace period starting.
+- **~16-second detection lag** — a device must miss two consecutive polls (2 × 8 s) before the grace period starts. Total time from leaving to lock is roughly 16 s + grace period.
 - **RSSI is approximate** — signal strength is affected by walls, body position, and RF interference. The distance labels are estimates.
 - **Moving the app breaks Launch at Login** — the LaunchAgent stores the executable path at the time you enable the setting. If you move `Tether.app`, disable and re-enable *Launch at Login*.
 - **Not notarized** — Gatekeeper will prompt on first launch (see [First launch](#first-launch)).
