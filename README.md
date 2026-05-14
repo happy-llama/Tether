@@ -1,4 +1,4 @@
-# BLELock
+# Tether
 
 A macOS menu bar utility that automatically locks your screen when a paired Bluetooth device moves out of range.
 
@@ -12,25 +12,25 @@ A macOS menu bar utility that automatically locks your screen when a paired Blue
 ### Build from source
 
 ```bash
-git clone https://github.com/yourname/BLELock.git
-cd BLELock
+git clone https://github.com/yourname/Tether.git
+cd Tether
 make install          # builds and copies to /Applications
 ```
 
 Or just build without installing:
 
 ```bash
-make app              # produces BLELock.app in the project directory
+make app              # produces Tether.app in the project directory
 ```
 
 ### First launch
 
 Because the app is not notarized, macOS Gatekeeper will block it on first open.
-Right-click `BLELock.app` → **Open** → **Open** to allow it.
+Right-click `Tether.app` → **Open** → **Open** to allow it.
 
 ## How It Works
 
-BLELock polls your Mac's Bluetooth stack every 8 seconds and reads the RSSI (signal strength) of each watched device. When the signal drops below the configured threshold — and stays below it for the full grace period — the screen is locked via `pmset displaysleepnow`.
+Tether polls your Mac's Bluetooth stack every 8 seconds and reads the RSSI (signal strength) of each watched device. When the signal drops below the configured threshold — and stays below it for the full grace period — the screen is locked via `pmset displaysleepnow`.
 
 No third-party tools required. Everything runs on built-in macOS utilities.
 
@@ -54,7 +54,7 @@ All settings are accessible from the menu bar icon.
 
 - **8-second polling interval** — there is up to an 8-second lag between a device leaving and the grace period starting.
 - **RSSI is approximate** — signal strength is affected by walls, body position, and RF interference. The distance labels are estimates.
-- **Moving the app breaks Launch at Login** — the LaunchAgent stores the executable path at the time you enable the setting. If you move `BLELock.app`, disable and re-enable *Launch at Login*.
+- **Moving the app breaks Launch at Login** — the LaunchAgent stores the executable path at the time you enable the setting. If you move `Tether.app`, disable and re-enable *Launch at Login*.
 - **Not notarized** — Gatekeeper will prompt on first launch (see [First launch](#first-launch)).
 
 ## License

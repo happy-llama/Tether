@@ -2,12 +2,12 @@
 import PackageDescription
 
 let package = Package(
-    name: "BLELock",
+    name: "Tether",
     platforms: [.macOS(.v13)],
     targets: [
         .executableTarget(
-            name: "BLELock",
-            path: "Sources/BLELock",
+            name: "Tether",
+            path: "Sources/Tether",
         )
     ]
 )

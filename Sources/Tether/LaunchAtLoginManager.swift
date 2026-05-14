@@ -1,9 +1,9 @@
 import Foundation
 
 class LaunchAtLoginManager {
-    private let label    = "com.blelock"
+    private let label    = "com.tether"
     private let plistURL = URL(fileURLWithPath: NSHomeDirectory())
-        .appendingPathComponent("Library/LaunchAgents/com.blelock.plist")
+        .appendingPathComponent("Library/LaunchAgents/com.tether.plist")
 
     var isEnabled: Bool {
         FileManager.default.fileExists(atPath: plistURL.path)

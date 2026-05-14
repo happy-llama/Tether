@@ -5,7 +5,7 @@ class BluetoothMonitor {
     let gracePeriod: TimeInterval
     let rssiThreshold: Int
     var lockMode: LockMode = .allDevicesLeave
-    private let logFile = "/tmp/blelock_debug.log"
+    private let logFile = "/tmp/tether_debug.log"
 
     private(set) var watchedAddresses: [String] = []
     var deviceNames: [String: String] = [:]
@@ -20,7 +20,7 @@ class BluetoothMonitor {
     init(gracePeriod: TimeInterval = 30, rssiThreshold: Int = -70) {
         self.gracePeriod = gracePeriod
         self.rssiThreshold = rssiThreshold
-        log("BLELock started, threshold=\(rssiThreshold), grace=\(Int(gracePeriod))s")
+        log("Tether started, threshold=\(rssiThreshold), grace=\(Int(gracePeriod))s")
     }
 
     func setWatchedAddresses(_ addresses: [String]) {

@@ -1,4 +1,4 @@
-APP      = BLELock
+APP      = Tether
 BUNDLE   = $(APP).app
 RELEASE  = .build/release/$(APP)
 
