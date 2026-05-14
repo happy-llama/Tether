@@ -12,6 +12,10 @@ class BluetoothMonitor {
     private let missThreshold = 2
     private var missCounts: [String: Int] = [:]
 
+    // Devices seen at least once this session. A device that has never appeared
+    // is not counted as "away" — it simply isn't being carried today.
+    private var seenAddresses: Set<String> = []
+
     private(set) var watchedAddresses: [String] = []
     var deviceNames: [String: String] = [:]
 
@@ -49,6 +53,7 @@ class BluetoothMonitor {
         disconnectTime = nil
         wasNearby = false
         missCounts = [:]
+        seenAddresses = []
         log("Monitor stopped")
     }
 
@@ -67,17 +72,20 @@ class BluetoothMonitor {
             if isConnected(in: profileData, address: address) {
                 nearbyRSSIs.append((address, 0))
                 missCounts[address] = 0
+                seenAddresses.insert(address)
             } else if let rssi = parseRSSI(from: profileData, address: address), rssi >= rssiThreshold {
                 nearbyRSSIs.append((address, rssi))
                 missCounts[address] = 0
+                seenAddresses.insert(address)
             } else {
                 let count = (missCounts[address] ?? 0) + 1
                 missCounts[address] = count
-                if count >= missThreshold {
+                if count >= missThreshold && seenAddresses.contains(address) {
                     awayAddresses.append(address)
-                } else {
+                } else if count < missThreshold {
                     pendingAddresses.append(address)
                 }
+                // never-seen devices are silently ignored
             }
         }
 
