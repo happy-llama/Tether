@@ -36,6 +36,10 @@
 "lock_mode.all_leave" = "所有裝置離開才鎖";
 "lock_mode.any_leave" = "單一裝置離開就鎖";
 
+/* Debug */
+"menu.open_log"       = "開啟 Log";
+"menu.log_not_found"  = "尚無 log 檔案。";
+
 /* Device menu */
 "device.none_found" = "找不到已配對裝置";
 "device.rescan"     = "重新掃描";

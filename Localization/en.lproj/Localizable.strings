@@ -36,6 +36,10 @@
 "lock_mode.all_leave" = "Lock when all devices leave";
 "lock_mode.any_leave" = "Lock when any device leaves";
 
+/* Debug */
+"menu.open_log" = "Open Log";
+"menu.log_not_found" = "No log file yet.";
+
 /* Device menu */
 "device.none_found" = "No paired devices found";
 "device.rescan"     = "Rescan";

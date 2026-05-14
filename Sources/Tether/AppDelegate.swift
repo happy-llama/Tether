@@ -91,6 +91,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         launchAtLoginItem = NSMenuItem(title: L("menu.launch_at_login"), action: #selector(toggleLaunchAtLogin), keyEquivalent: "")
         launchAtLoginItem.target = self
         settingsMenu.addItem(launchAtLoginItem)
+        settingsMenu.addItem(.separator())
+
+        let openLogItem = NSMenuItem(title: L("menu.open_log"), action: #selector(openLog), keyEquivalent: "")
+        openLogItem.target = self
+        settingsMenu.addItem(openLogItem)
 
         settingsItem.submenu = settingsMenu
         menu.addItem(settingsItem)
@@ -249,4 +254,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func lockNow() { ScreenLocker.lock() }
+
+    @objc private func openLog() {
+        let url = URL(fileURLWithPath: "/tmp/tether_debug.log")
+        guard FileManager.default.fileExists(atPath: url.path) else {
+            let alert = NSAlert()
+            alert.messageText = L("menu.log_not_found")
+            alert.runModal()
+            return
+        }
+        NSWorkspace.shared.open(url)
+    }
 }
