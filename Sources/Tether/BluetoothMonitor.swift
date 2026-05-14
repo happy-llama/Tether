@@ -189,18 +189,42 @@ class BluetoothMonitor {
         return nil
     }
 
+    private let logMaxBytes  = 512 * 1024   // 512 KB hard cap
+    private let logKeepBytes = 256 * 1024   // keep newest 256 KB after truncation
+
     private func log(_ msg: String) {
         let ts = DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)
         let line = "[\(ts)] \(msg)\n"
         guard let data = line.data(using: .utf8) else { return }
+        let url = URL(fileURLWithPath: logFile)
         if FileManager.default.fileExists(atPath: logFile) {
             if let fh = FileHandle(forWritingAtPath: logFile) {
-                fh.seekToEndOfFile()
-                fh.write(data)
-                fh.closeFile()
+                let size = Int(fh.seekToEndOfFile())
+                if size > logMaxBytes {
+                    fh.closeFile()
+                    trimLog(url: url)
+                    if let fh2 = FileHandle(forWritingAtPath: logFile) {
+                        fh2.seekToEndOfFile()
+                        fh2.write(data)
+                        fh2.closeFile()
+                    }
+                } else {
+                    fh.write(data)
+                    fh.closeFile()
+                }
             }
         } else {
-            try? data.write(to: URL(fileURLWithPath: logFile))
+            try? data.write(to: url)
         }
+    }
+
+    private func trimLog(url: URL) {
+        guard let full = try? Data(contentsOf: url), full.count > logKeepBytes else { return }
+        var tail = full.suffix(logKeepBytes)
+        // Align to next newline so we don't write a partial line
+        if let nl = tail.firstIndex(of: UInt8(ascii: "\n")) {
+            tail = tail[tail.index(after: nl)...]
+        }
+        try? tail.write(to: url)
     }
 }
