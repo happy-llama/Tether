@@ -124,6 +124,8 @@ class BluetoothMonitor {
                 onLockTriggered?()
                 disconnectTime = nil
                 wasNearby = false
+                seenAddresses = []
+                missCounts = [:]
             } else if let dt = disconnectTime {
                 let remaining = Int(gracePeriod - Date().timeIntervalSince(dt))
                 onStatusChanged?(L("status.device_left", remaining))
