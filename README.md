@@ -12,7 +12,7 @@ A macOS menu bar utility that automatically locks your screen when a paired Blue
 ### Build from source
 
 ```bash
-git clone https://github.com/yourname/Tether.git
+git clone https://github.com/happy-llama/Tether.git
 cd Tether
 make install          # builds and copies to /Applications
 ```
