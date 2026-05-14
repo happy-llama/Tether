@@ -7,6 +7,11 @@ class BluetoothMonitor {
     var lockMode: LockMode = .allDevicesLeave
     private let logFile = "/tmp/tether_debug.log"
 
+    // Require this many consecutive missed polls before treating a device as away.
+    // Absorbs transient BLE advertisement gaps (e.g. Apple Watch power-saving pauses).
+    private let missThreshold = 2
+    private var missCounts: [String: Int] = [:]
+
     private(set) var watchedAddresses: [String] = []
     var deviceNames: [String: String] = [:]
 
@@ -20,11 +25,12 @@ class BluetoothMonitor {
     init(gracePeriod: TimeInterval = 30, rssiThreshold: Int = -70) {
         self.gracePeriod = gracePeriod
         self.rssiThreshold = rssiThreshold
-        log("Tether started, threshold=\(rssiThreshold), grace=\(Int(gracePeriod))s")
+        log("Tether started, threshold=\(rssiThreshold), grace=\(Int(gracePeriod))s, missThreshold=\(missThreshold)")
     }
 
     func setWatchedAddresses(_ addresses: [String]) {
         watchedAddresses = addresses
+        missCounts = missCounts.filter { addresses.contains($0.key) }
         log("Watching: \(addresses.joined(separator: ", "))")
     }
 
@@ -42,6 +48,7 @@ class BluetoothMonitor {
         timer = nil
         disconnectTime = nil
         wasNearby = false
+        missCounts = [:]
         log("Monitor stopped")
     }
 
@@ -54,34 +61,40 @@ class BluetoothMonitor {
         let profileData = runSystemProfiler()
         var nearbyRSSIs: [(String, Int)] = []
         var awayAddresses: [String] = []
+        var pendingAddresses: [String] = []
 
         for address in watchedAddresses {
             if isConnected(in: profileData, address: address) {
                 nearbyRSSIs.append((address, 0))
+                missCounts[address] = 0
             } else if let rssi = parseRSSI(from: profileData, address: address), rssi >= rssiThreshold {
                 nearbyRSSIs.append((address, rssi))
+                missCounts[address] = 0
             } else {
-                awayAddresses.append(address)
+                let count = (missCounts[address] ?? 0) + 1
+                missCounts[address] = count
+                if count >= missThreshold {
+                    awayAddresses.append(address)
+                } else {
+                    pendingAddresses.append(address)
+                }
             }
         }
 
-        // Determine overall "nearby" based on lock mode
         let nearby: Bool
         switch lockMode {
         case .allDevicesLeave:
-            // 所有裝置都離開才鎖 → 任一裝置在場就算 nearby
-            nearby = !nearbyRSSIs.isEmpty
+            nearby = (nearbyRSSIs.count + pendingAddresses.count) > 0
         case .anyDeviceLeaves:
-            // 單一裝置離開就鎖 → 必須所有裝置都在場才算 nearby
             nearby = awayAddresses.isEmpty
         }
 
         let rssiDesc = nearbyRSSIs.map { addr, rssi -> String in
             let name = deviceNames[addr] ?? String(addr.suffix(5))
-            return "\(name):\(rssi)"
+            return rssi == 0 ? "\(name):connected" : "\(name):\(rssi)"
         }.joined(separator: " ")
 
-        log("mode=\(lockMode.rawValue) nearby=\(nearby) nearbyRSSIs=\(nearbyRSSIs) away=\(awayAddresses)")
+        log("mode=\(lockMode.rawValue) nearby=\(nearby) nearbyRSSIs=\(nearbyRSSIs) away=\(awayAddresses) pending=\(pendingAddresses)")
 
         if nearby {
             if !wasNearby {
