@@ -56,7 +56,9 @@ class BluetoothMonitor {
         var awayAddresses: [String] = []
 
         for address in watchedAddresses {
-            if let rssi = parseRSSI(from: profileData, address: address), rssi >= rssiThreshold {
+            if isConnected(in: profileData, address: address) {
+                nearbyRSSIs.append((address, 0))
+            } else if let rssi = parseRSSI(from: profileData, address: address), rssi >= rssiThreshold {
                 nearbyRSSIs.append((address, rssi))
             } else {
                 awayAddresses.append(address)
@@ -96,6 +98,17 @@ class BluetoothMonitor {
                 log("→ Devices left, starting \(Int(gracePeriod))s grace timer")
                 onStatusChanged?(L("status.device_left", Int(gracePeriod)))
             } else if let dt = disconnectTime, Date().timeIntervalSince(dt) >= gracePeriod {
+                let freshData = runSystemProfiler()
+                let stillAway = !watchedAddresses.contains {
+                    isConnected(in: freshData, address: $0) ||
+                    (parseRSSI(from: freshData, address: $0).map { $0 >= rssiThreshold } ?? false)
+                }
+                guard stillAway else {
+                    log("→ Device returned before lock, cancelling")
+                    disconnectTime = nil
+                    wasNearby = true
+                    return
+                }
                 log("→ Grace period expired → LOCKING")
                 onStatusChanged?(L("status.locking"))
                 onLockTriggered?()
@@ -124,6 +137,24 @@ class BluetoothMonitor {
 
     private func normalizeAddress(_ addr: String) -> String {
         addr.uppercased().replacingOccurrences(of: "-", with: ":").replacingOccurrences(of: ".", with: ":")
+    }
+
+    private func isConnected(in output: String, address: String) -> Bool {
+        let needle = normalizeAddress(address)
+        var inConnected = false
+        for line in output.components(separatedBy: "\n") {
+            let indent = line.prefix(while: { $0 == " " }).count
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            if indent == 6 {
+                inConnected = trimmed == "Connected:"
+                continue
+            }
+            if inConnected && indent == 14 && trimmed.hasPrefix("Address:") {
+                let addr = trimmed.dropFirst("Address:".count).trimmingCharacters(in: .whitespaces)
+                if normalizeAddress(addr) == needle { return true }
+            }
+        }
+        return false
     }
 
     private func parseRSSI(from output: String, address: String) -> Int? {
