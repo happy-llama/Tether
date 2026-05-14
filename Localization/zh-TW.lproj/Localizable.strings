@@ -1,0 +1,41 @@
+/* Status bar messages */
+"status.starting"           = "啟動中…";
+"status.scanning"           = "掃描裝置中…";
+"status.no_device_selected" = "未選擇任何裝置";
+"status.device_detected"    = "裝置已偵測，開始監控";
+"status.monitoring"         = "監控中 (%@)";
+"status.device_left"        = "裝置離開，%d 秒後鎖定";
+"status.locking"            = "鎖定中";
+"status.waiting"            = "等待裝置靠近…";
+"status.monitoring_disabled" = "監控已停用";
+
+/* Menu items */
+"menu.lock_now"           = "立即鎖定";
+"menu.disable_monitoring" = "停用監控";
+"menu.enable_monitoring"  = "啟用監控";
+"menu.settings"           = "設定";
+"menu.watched_devices"    = "監控裝置";
+"menu.lock_delay"         = "鎖定延遲";
+"menu.sensitivity"        = "靈敏度";
+"menu.lock_condition"     = "鎖定條件";
+"menu.launch_at_login"    = "開機時自動啟動";
+"menu.quit"               = "結束";
+
+/* Lock delay options */
+"delay.10s" = "10 秒";
+"delay.30s" = "30 秒";
+"delay.60s" = "60 秒";
+
+/* Sensitivity options */
+"rssi.1m"  = "~1 公尺（鄰桌就鎖）";
+"rssi.3m"  = "~3 公尺（出房間鎖）";
+"rssi.5m"  = "~5 公尺（走更遠鎖）";
+"rssi.10m" = "~10 公尺（幾乎離開才鎖）";
+
+/* Lock condition options */
+"lock_mode.all_leave" = "所有裝置離開才鎖";
+"lock_mode.any_leave" = "單一裝置離開就鎖";
+
+/* Device menu */
+"device.none_found" = "找不到已配對裝置";
+"device.rescan"     = "重新掃描";

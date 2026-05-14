@@ -1,0 +1,1 @@
+NSBluetoothAlwaysUsageDescription = "BLELock 需要讀取藍牙訊號強度，以偵測裝置離開並自動鎖定螢幕。";

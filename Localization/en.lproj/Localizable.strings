@@ -1,0 +1,41 @@
+/* Status bar messages */
+"status.starting"          = "Starting…";
+"status.scanning"          = "Scanning devices…";
+"status.no_device_selected" = "No device selected";
+"status.device_detected"   = "Device detected — monitoring";
+"status.monitoring"        = "Monitoring (%@)";
+"status.device_left"       = "Device left — locking in %d s";
+"status.locking"           = "Locking…";
+"status.waiting"           = "Waiting for device…";
+"status.monitoring_disabled" = "Monitoring disabled";
+
+/* Menu items */
+"menu.lock_now"         = "Lock Now";
+"menu.disable_monitoring" = "Disable Monitoring";
+"menu.enable_monitoring"  = "Enable Monitoring";
+"menu.settings"         = "Settings";
+"menu.watched_devices"  = "Watched Devices";
+"menu.lock_delay"       = "Lock Delay";
+"menu.sensitivity"      = "Sensitivity";
+"menu.lock_condition"   = "Lock Condition";
+"menu.launch_at_login"  = "Launch at Login";
+"menu.quit"             = "Quit";
+
+/* Lock delay options */
+"delay.10s" = "10 seconds";
+"delay.30s" = "30 seconds";
+"delay.60s" = "60 seconds";
+
+/* Sensitivity options */
+"rssi.1m"  = "~1 m  (very close)";
+"rssi.3m"  = "~3 m  (leave the desk)";
+"rssi.5m"  = "~5 m  (leave the room)";
+"rssi.10m" = "~10 m (far away)";
+
+/* Lock condition options */
+"lock_mode.all_leave" = "Lock when all devices leave";
+"lock_mode.any_leave" = "Lock when any device leaves";
+
+/* Device menu */
+"device.none_found" = "No paired devices found";
+"device.rescan"     = "Rescan";

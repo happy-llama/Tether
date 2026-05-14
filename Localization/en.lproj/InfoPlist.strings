@@ -1,0 +1,1 @@
+NSBluetoothAlwaysUsageDescription = "BLELock reads Bluetooth signal strength to detect when your device moves away and automatically lock the screen.";

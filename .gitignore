@@ -1,0 +1,4 @@
+.build/
+*.app/
+.idea/
+.DS_Store
