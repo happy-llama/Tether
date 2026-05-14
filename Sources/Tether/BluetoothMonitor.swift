@@ -102,7 +102,9 @@ class BluetoothMonitor {
             return rssi == 0 ? "\(name):connected" : "\(name):\(rssi)"
         }.joined(separator: " ")
 
-        log("mode=\(lockMode.rawValue) nearby=\(nearby) nearbyRSSIs=\(nearbyRSSIs) away=\(awayAddresses) pending=\(pendingAddresses)")
+        if !awayAddresses.isEmpty || !pendingAddresses.isEmpty {
+            log("mode=\(lockMode.rawValue) nearby=\(nearby) nearbyRSSIs=\(nearbyRSSIs) away=\(awayAddresses) pending=\(pendingAddresses)")
+        }
 
         if nearby {
             if !wasNearby {
